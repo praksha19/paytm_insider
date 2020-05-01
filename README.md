@@ -18,3 +18,5 @@ Note: . As mentioned i was not able to find any nodejs-test:latest docker image 
 7. Tested load and shared the results.
 8. i have used minikube tunneling to expose the service which is running on port 3000
  Note: i was unable to use the EC2 classic load balancer because i dnt have sufficent resource in aws.
+ 
+9. i have used ansible palybook to install minikube and deploying manifest files attached playbook.
