@@ -1,0 +1,50 @@
+---
+- hosts: ansible
+  remote_user: prakash_s
+
+  tasks:
+  
+  - name: Update and upgrade apt packages
+    shell: sudo apt-get update
+
+  - name: minikube installation 
+    command: "{{item}}"
+    with_items:
+     - wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+     - chmod +x minikube-linux-amd64
+     - sudo mv minikube-linux-amd64 /usr/local/bin/minikube
+
+  - name: minikube installation 
+    command: "{{item}}"
+    with_items:
+     - curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+     - echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+     - sudo apt update
+
+  - name: Install base packages
+    apt:
+     name: "{{ item }}"
+     state: present
+    with_items:
+     - apt-transport-https
+     - virtualbox
+     - virtualbox-ext-pack
+     - kubectl
+     - docker.io
+ 
+  - name: Start service docker, if not started
+    service:
+      name: docker
+      state: started
+
+  - name: Kubernetes manifest 
+    command: "{{item}}"
+    with_items:
+     - kubectl apply -f deployment.yaml
+     - kubectl apply -f service.yml
+     - kubectl apply -f hpa.yml
+     - kubectl apply -f hpam.yml
+     - kubectl apply -f prior.yml 
+    args:
+     chdir: /path/manifest
+  
